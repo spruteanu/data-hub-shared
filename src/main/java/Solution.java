@@ -5,6 +5,7 @@ public class Solution {
 
     public static void main(String args[]) throws Exception {
         /* Enter your code here. Read input from STDIN. Print output to STDOUT */
+        // HALE those heroes that resolved it in 90 minutes. For me it took longer, and with second attempt
         final Solution solution = new Solution();
         System.out.println(solution.countOnBits(solution.readArraySize(), solution.readLine()));
     }
@@ -37,7 +38,6 @@ public class Solution {
 
         BitStatistic current = new BitStatistic();
         BitStatistic max0 = new BitStatistic();
-        BitStatistic max1 = new BitStatistic();
 
         final char[] chars = inValue.toCharArray();
         for (int i = 0; i < chars.length; i++) {
@@ -45,9 +45,6 @@ public class Solution {
             switch (digit) {
                 case ZERO_BIT:
                     if (current.isOne(chars)) {
-                        if (current.count > max1.count) {
-                            max1 = current;
-                        }
                         current = new BitStatistic(i, 1, current);
                         if (max0.isEmpty()) {
                             max0 = current;
@@ -63,15 +60,15 @@ public class Solution {
                             max0 = current;
                         }
                         current = new BitStatistic(i, 1, current);
-                        if (max1.isEmpty()) {
-                            max1 = current;
-                        }
                     } else {
                         current.increment(i);
                     }
                     count1++;
                     break;
             }
+        }
+        if (current.isZero(chars) && current.count > max0.count) {
+            max0 = current;
         }
         final int nDigits = count0 + count1;
         if (nDigits < nSize) {
@@ -116,16 +113,15 @@ public class Solution {
                 result = Math.max(result, next.swapAndCountNext(result, chars));
             }
             if (previous != null) {
-                result = Math.max(result, previous.swapAndCountPrevious(count1, chars));
-//                BitStatistic prev = previous.previous;
-//                if (prev != null) {
-//                    result = Math.max(result, prev.swapAndCountPrevious(count1, chars));
-//                }
+                result = Math.max(result, previous.swapAndCountPrevious(result, chars));
             }
             return result;
         }
 
         int swapAndCountNext(int count1, char[] chars) {
+            if(next == null && isOne(chars)) {
+                return count1;
+            }
             int result = count(count1, chars);
             if (next != null) {
                 result = next.swapAndCountNext(result, chars);
@@ -134,6 +130,9 @@ public class Solution {
         }
 
         int swapAndCountPrevious(int count1, char[] chars) {
+            if(previous == null && isOne(chars)) {
+                return count1;
+            }
             int result = count(count1, chars);
             if (previous != null) {
                 result = previous.swapAndCountPrevious(result, chars);
@@ -163,33 +162,6 @@ public class Solution {
     }
 
 }
-// 1001110001101
-// 0101110001100
-// 0101010000011
-// 0101010101010
-// 0101010101011
-// 1101010101000
-// 1 0 0 1 0 0 1 0
-// 1 0 0 1 0 0 1 0 1 0 0 1 0 0 1 0
-// 1 0 0 1 0 0 1 0 1 0 0 1 0 0 0 0
-// 1 0 0 1 1 1 1 1 1 1 1 1 1 1 1 0
-// 1 0 0 1 1 0 1 1 1 1 0 0 1 1 1 0
-// 1 1 0 1 1 1 1 0 1 1 1 0 1 1 0 1
-// 1 1 0 1 1 1 1 0 1 0 1 1 1 1 0 0 1
-// 1 1 0 1 1 1 1 0 0 0 1 1 1 1 0 0 1
-// 1 1 0 1 1 1 1 0 0 0 0 1 1 1 1 0 0
-// 1 1 0 1 1 1 1 0 0 0 0 1 1 1 0 0 0
-// 1 1 0 1 0 1 0 1 0 1 0 1 1 1 0 0 0
-// 1 1 0 1 0 1 0 1 0 1 1 1 0 1 1 0 1
-// 0 1 0 1 0 1 0 1 0 1 1 1 0 0 0 0 1
-// 0 1 0 1 1 1 1 1 1 1 1 1 0 0 0 0 1
-// 0 1 0 1 1 0 1 0 1 1 1 0 1 0 1 1 0
-// 0 0 0 0 1 0
-// 1111011111111
-// 1111111111110
-// 0111111111111
-// 1111111111111
-// 0000000000000
 /*
 You are given an array of size N elements: d[0], d[1], ... d[N - 1] where each d[i] is either 0 or 1. You can perform at most one move on the array: choose any two integers [L, R], and flip all the elements between (and including) the Lth and Rth bits. L and R represent the left-most and right-most index of the bits marking the boundaries of the segment which you have decided to flip.
 
