@@ -1,3 +1,7 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class Solution {
 
     static final char ZERO_BIT = '0';
@@ -10,15 +14,17 @@ public class Solution {
         System.out.println(solution.countOnBits(solution.readArraySize(), solution.readLine()));
     }
 
-    String readLine() {
-        final String inValue = System.console().readLine();
+    String readLine() throws IOException {
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        final String inValue;
+        inValue = reader.readLine();
         if (inValue == null || inValue.trim().length() == 0) {
             throw new RuntimeException("An empty string is entered");
         }
         return inValue;
     }
 
-    int readArraySize() {
+    int readArraySize() throws IOException {
         final String inValue = readLine();
         int result;
         try {
